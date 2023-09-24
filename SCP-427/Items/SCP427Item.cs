@@ -117,43 +117,52 @@ namespace SCP_427.Items
 
         private void OnOpeningScp244(OpeningScp244EventArgs ev)
         {
-            if (this.Check(ev.Pickup))
+            if (ev.Pickup != null)
             {
-                SCP427Item.TrySpawn(62, ev.Pickup.Position, out _);
-                ev.Pickup.UnSpawn();
-                ev.Pickup.Destroy();
+                if (this.Check(ev.Pickup))
+                {
+                    SCP427Item.TrySpawn(62, ev.Pickup.Position, out _);
+                    ev.Pickup.UnSpawn();
+                    ev.Pickup.Destroy();
+                }
             }
         }
 
         private void OnPickingUpItem(PickingUpItemEventArgs ev)
         {
-            if (this.Check(ev.Pickup))
+            if (ev.Pickup != null)
             {
-                if (!this.cooldownTimes.ContainsKey(ev.Player))
+                if (this.Check(ev.Pickup))
                 {
-                    this.cooldownTimes.Add(ev.Player, Time.time - 120);
-                }
+                    if (!this.cooldownTimes.ContainsKey(ev.Player))
+                    {
+                        this.cooldownTimes.Add(ev.Player, Time.time - 120);
+                    }
 
-                float cooldownTime = 0F;
-                this.cooldownTimes.TryGetValue(ev.Player, out cooldownTime);
-                if (!(Time.time > cooldownTime + 120))
-                {
-                    Broadcast broadcast = new Broadcast();
-                    broadcast.Duration = 2;
-                    broadcast.Content = "You must wait " + Mathf.RoundToInt(120 - (Time.time - cooldownTime)) + " seconds before using SCP 427 again.";
-                    broadcast.Show = true;
-                    broadcast.Type = global::Broadcast.BroadcastFlags.Normal;
-                    ev.Player.Broadcast(broadcast, true);
+                    float cooldownTime = 0F;
+                    this.cooldownTimes.TryGetValue(ev.Player, out cooldownTime);
+                    if (!(Time.time > cooldownTime + 120))
+                    {
+                        Broadcast broadcast = new Broadcast();
+                        broadcast.Duration = 2;
+                        broadcast.Content = "You must wait " + Mathf.RoundToInt(120 - (Time.time - cooldownTime)) + " seconds before using SCP 427 again.";
+                        broadcast.Show = true;
+                        broadcast.Type = global::Broadcast.BroadcastFlags.Normal;
+                        ev.Player.Broadcast(broadcast, true);
+                    }
                 }
             }
         }
 
         private void OnDroppedItem(DroppedItemEventArgs ev)
         {
-            if (this.Check(ev.Pickup))
+            if (ev.Pickup != null)
             {
-                SCP427Item.TrySpawn(62, ev.Pickup.Position, out _);
-                ev.Pickup.Destroy();
+                if (this.Check(ev.Pickup))
+                {
+                    SCP427Item.TrySpawn(62, ev.Pickup.Position, out _);
+                    ev.Pickup.Destroy();
+                }
             }
         }
 
